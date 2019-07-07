@@ -8,7 +8,6 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 import './App.css';
 
 
@@ -35,15 +34,7 @@ const particlesOptions = {
 
 /* Particles settings ends */
 
-/* Clarifai API Key */
-
-const app = new Clarifai.App({
-  apiKey: 'a93790ffb6ed456e83c9f7139e48f430' 
- });
-
- /* Clarifai API Key */
-
- const initialState = {
+const initialState = {
   input: '',
   imageUrl: '',
   box: {},
@@ -97,10 +88,15 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    this.setState ({imageUrl: this.state.input})
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, 
-      this.state.input)
+    this.setState ({imageUrl: this.state.input});
+      fetch ('http://localhost:3000/imageurl', {
+              method: 'post',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                input: this.state.input
+              })
+      })
+    .then(response => response.json())
     .then(response => this.displayBoundingBox(this.calculateFaceLocation(response)))
     .catch (err => console.log (err));
   }
