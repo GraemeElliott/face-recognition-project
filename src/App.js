@@ -43,22 +43,24 @@ const app = new Clarifai.App({
 
  /* Clarifai API Key */
 
+ const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    joined: '',
+  }
+ }
+
 class App extends Component {
   constructor () {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        joined: '',
-      }
-    }
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -96,15 +98,16 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState ({imageUrl: this.state.input})
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, 
-    this.state.input)
+    app.models
+      .predict(Clarifai.FACE_DETECT_MODEL, 
+      this.state.input)
     .then(response => this.displayBoundingBox(this.calculateFaceLocation(response)))
     .catch (err => console.log (err));
   }
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === 'home') {
       this.setState({isSignedIn: true})
     }
@@ -122,7 +125,9 @@ class App extends Component {
         {route === 'home' 
           ? <div>
               <Logo />
-              <User />
+              <User 
+                name = {this.state.user.name}
+              />
               <ImageLinkForm 
               onInputChange = {this.onInputChange} 
               onButtonSubmit = {this.onButtonSubmit}/>

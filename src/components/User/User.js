@@ -1,13 +1,13 @@
 import React from 'react';
 
-const User = () => {
+const User = ({name}) => {
   return (
     <div>
       <div className='white f1'>
-        {'Welcome Graeme!'}
+        {`Welcome, ${name}!`}
       </div>
     </div>
   );
 }
 
-export default User
+export default User;
